@@ -24,8 +24,10 @@ public class SendThread extends Thread {
 			
 			sendWriter.println("IDabcd123" + ChatClient.userID);
 			sendWriter.flush();
+
 			
 			while(true) {
+				System.out.println(ChatClient.userID +"> ");
 				sendString = tempBuf.readLine();
 				if(sendString.equals("exit")) {
 					break;
