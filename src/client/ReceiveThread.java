@@ -25,6 +25,7 @@ public class ReceiveThread extends Thread{
 				}
 				System.out.println(receiveString);
 			}
+			
 		}
 		catch(IOException e) {
 			e.printStackTrace();
