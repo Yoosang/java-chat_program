@@ -7,46 +7,47 @@ import java.net.Socket;
 import java.io.PrintWriter;
 
 public class SendThread extends Thread {
-	private Socket m_socket;
+	private Socket messageSocket;
 	
 	@Override
 	public void run() {
 		
 		super.run();
 		try {
-			BufferedReader tempBuf = new BufferedReader(new InputStreamReader(System.in));
-			PrintWriter sendWriter = new PrintWriter(m_socket.getOutputStream());
+			BufferedReader recieveBuf = new BufferedReader(new InputStreamReader(System.in));
+			PrintWriter sendWriter = new PrintWriter(messageSocket.getOutputStream());
 			
 			String sendString;
 			
-			System.out.println("사용할 ID를 입력해주세요 : ");
-			ChatClient.userID = tempBuf.readLine();
+			System.out.print("사용할 ID를 입력해주세요 : ");
+			ChatClient.userID = recieveBuf.readLine();
 			
-			sendWriter.println("IDabcd123" + ChatClient.userID);
+			sendWriter.println("enter>>" + ChatClient.userID);
 			sendWriter.flush();
 
 			
 			while(true) {
-				System.out.println(ChatClient.userID +"> ");
-				sendString = tempBuf.readLine();
+				sendString = recieveBuf.readLine();
 				if(sendString.equals("exit")) {
+					sendWriter.println("quit>>" + recieveBuf);
+					sendWriter.flush();
 					break;
 				}
 				
-				sendWriter.println(sendString);
+				sendWriter.println("message>>" + sendString);
 				sendWriter.flush();
 			}
 			
 			sendWriter.close();
-			tempBuf.close();
-			m_socket.close();
+			recieveBuf.close();
+			messageSocket.close();
 		}
 		catch(IOException e) {
 			e.printStackTrace();
 		}
 	}
 	public void setSocket(Socket _socket) {
-		m_socket = _socket;
+		this.messageSocket = _socket;
 	}
 }
 

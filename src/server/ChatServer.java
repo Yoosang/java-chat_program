@@ -5,11 +5,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.util.ArrayList;
+import java.io.PrintWriter;
 
 public class ChatServer {
-	private final static int PORT_NUMBER = 8888; 
-	
+	private final static int PORT_NUMBER = 8888;
+	public static ArrayList<PrintWriter> messageList;
 	public static void main(String[] args) {
+		messageList = new ArrayList<PrintWriter>();
 		
 		try {
 			ServerSocket server_socket = new ServerSocket();

@@ -8,22 +8,22 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 
+import client.ChatClient;
+
 public class ClientManagerThread extends Thread{
 	private Socket clientSocket;
 	private String user_ID;
-	private ArrayList<PrintWriter> messageList;
 	
 	public void setSocket(Socket _socket) {
-		clientSocket = _socket;
+		this.clientSocket = _socket;
 	}
 	
 	@Override
 	public void run() {
 		super.run();
 		try {
-			messageList = new ArrayList<PrintWriter>();
 			BufferedReader messageReader = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
-			PrintWriter messageWriter = new PrintWriter(new OutputStreamWriter(clientSocket.getOutputStream()));
+			PrintWriter messageWriter = new PrintWriter(clientSocket.getOutputStream());
 			String message;
 			 
 			while(true) {
@@ -38,12 +38,14 @@ public class ClientManagerThread extends Thread{
 				
 				if(splitedMessage[0].equals("enter")) {
 					joinChat(splitedMessage[1], messageWriter);
+					System.out.println(user_ID+" 님이 입장했습니다.");
 				}
 				else if(splitedMessage[0].equals("message")) {
 					send(user_ID + ">>" + splitedMessage[1]);
 				}
 				else if(splitedMessage[0].equals("quit")) {
 					exit(messageWriter);
+					break;
 				}	
 			}
 		}
@@ -53,28 +55,28 @@ public class ClientManagerThread extends Thread{
 	}
 	
 	private void joinChat(String name, PrintWriter writer) {
-		name = this.user_ID;
-		String data = name + "이(가) 입장했습니다.";
-		send(data);
-		
-		synchronized (messageList) {
-			messageList.add(writer);
+		this.user_ID = name;
+		String alram = user_ID + "이(가) 입장했습니다.";
+		send(alram);
+		synchronized (ChatServer.messageList) {
+			ChatServer.messageList.add(writer);
 		}
 	}
 	
 	private void exit(PrintWriter writer) {
-		synchronized (messageList) {
-			messageList.remove(writer);
+		synchronized (ChatServer.messageList) {
+			ChatServer.messageList.remove(writer);
 		}
-		String alarm = this.user_ID + "이(가) 나갔습니다.";
+		String alarm = user_ID + "이(가) 나갔습니다.";
 		send(alarm);
 	}
 	
 	private void send(String text) {
-		synchronized (messageList) {
-			for(int i = 0; i < messageList.size(); i++) {
-				messageList.get(i).println(text);
-				messageList.get(i).flush();
+		synchronized (ChatServer.messageList) {
+			System.out.println(ChatServer.messageList.size());
+			for(int i = 0; i < ChatServer.messageList.size(); i++) {
+				ChatServer.messageList.get(i).println(text);
+				ChatServer.messageList.get(i).flush();
 			}
 		}
 	}

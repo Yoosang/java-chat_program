@@ -2,23 +2,28 @@ package client;
 
 
 import java.io.IOException;
+import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 public class ChatClient {
-	private final static String IP = "localhost";
+	private static String IP;
 	private final static int PORT_NUMBER = 8888;
 	public static String userID;
 	
 	public static void main(String args[]) {
+		Socket clientSocket = new Socket();
+		IP = inputIP();
+		
 		try {
-			Socket c_socket = new Socket(IP, PORT_NUMBER);
+			clientSocket.connect(new InetSocketAddress(IP, PORT_NUMBER));
 			
 			ReceiveThread rec_thread = new ReceiveThread();
-			rec_thread.setSocket(c_socket);
+			rec_thread.setSocket(clientSocket);
 			
 			SendThread send_thread = new SendThread();
-			send_thread.setSocket(c_socket);
+			send_thread.setSocket(clientSocket);
 			
 			send_thread.start();
 			rec_thread.start();
@@ -30,5 +35,20 @@ public class ChatClient {
 			e.printStackTrace();
 		}
 	}
+	
+	private static String inputIP() {
+		String ret;
+		Scanner scan = new Scanner(System.in);	
+		while(true) {
+			System.out.print("IP를 입력하세요: ");
+			ret = scan.nextLine();
+			if(!ret.isEmpty()) {
+				break;
+			}
+		}
+		scan.close();
+		return ret;
+	}
+	
 }
 
