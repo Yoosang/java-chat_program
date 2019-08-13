@@ -1,11 +1,11 @@
 package client;
 
-
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.net.UnknownHostException;
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 
 public class ChatClient {
 	private static String IP;
@@ -37,16 +37,15 @@ public class ChatClient {
 	}
 	
 	private static String inputIP() {
-		String ret;
-		Scanner scan = new Scanner(System.in);	
-		while(true) {
+		String ret = null;
+		BufferedReader ipBuf = new BufferedReader(new InputStreamReader(System.in));
+		try {
 			System.out.print("IP를 입력하세요: ");
-			ret = scan.nextLine();
-			if(!ret.isEmpty()) {
-				break;
-			}
+			ret = ipBuf.readLine();
 		}
-		scan.close();
+		catch (IOException e) {
+			e.printStackTrace();
+		}
 		return ret;
 	}
 	

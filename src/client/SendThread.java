@@ -17,24 +17,24 @@ public class SendThread extends Thread {
 			BufferedReader recieveBuf = new BufferedReader(new InputStreamReader(System.in));
 			PrintWriter sendWriter = new PrintWriter(messageSocket.getOutputStream());
 			
-			String sendString;
+			String inputString;
 			
 			System.out.print("사용할 ID를 입력해주세요 : ");
 			ChatClient.userID = recieveBuf.readLine();
-			
+			 
 			sendWriter.println("enter>>" + ChatClient.userID);
 			sendWriter.flush();
 
 			
 			while(true) {
-				sendString = recieveBuf.readLine();
-				if(sendString.equals("exit")) {
+				inputString = recieveBuf.readLine();
+				if(inputString.equals("exit")) {
 					sendWriter.println("quit>>" + recieveBuf);
 					sendWriter.flush();
 					break;
 				}
 				
-				sendWriter.println("message>>" + sendString);
+				sendWriter.println("message>>" + inputString);
 				sendWriter.flush();
 			}
 			
